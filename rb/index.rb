@@ -16,13 +16,11 @@ if (false)
   print cgi["fn"]+"<BR/>\n"
 end
 
-if (cgi['cmd'] == 'erase')
-  fh = open('../src/'+cgi['fn'], "w")
-  fh.close
-elsif (cgi['cmd'] == 'read')
+if (cgi['cmd'] == 'read')
   fh = open('../src/'+cgi['fn'], "r")
   print fh.read
   fh.close
+
 elsif (cgi['cmd'] == 'transAll')
   readfh = open('../src/list/readArticleList.txt', "r")
   noreadfh = open('../src/list/noreadArticleList.txt', "a")
@@ -33,11 +31,13 @@ elsif (cgi['cmd'] == 'transAll')
   readfh = open('../src/list/readArticleList.txt', "w")#リストをすべて消す
   readfh.close
   noreadfh.close
+  
 elsif (cgi['cmd'] == 'add')
   fh = open('../src/'+cgi['fn'], "a")
   #fh.printf(cgi['data']+"\n")
   fh.puts cgi['data']
   fh.close
+
 elsif (cgi['cmd'] == 'readArray')
   articleArray = cgi['fn'].split(",")
   result = {}
@@ -60,6 +60,15 @@ elsif (cgi['cmd'] == 'logSave')
   fh = open('../src/logData/log.txt', "a")
   fh.puts cgi['data']
   fh.close
+
+elsif (cgi['cmd'] == 'rewrite')
+  fh = open('../src/'+cgi['fn'], "r")
+  olddata = fh.read#readによって持ってきたデータはテキストデータとして扱われる
+  newdata = olddata.gsub(/#{cgi['data']}\n/, '')#指定した文字列を置換する
+  fh = open('../src/'+cgi['fn'], "w")
+  fh.print newdata
+  fh.close
+
 elsif (cgi['cmd'] == 'test')
   search_word = "001"
   result = []
@@ -68,11 +77,7 @@ elsif (cgi['cmd'] == 'test')
     result.push data if data.include? search_word
   }
   p result
+
 else
-  fh = open('../src/'+cgi['fn'], "r")
-  olddata = fh.read#readによって持ってきたデータはテキストデータとして扱われる
-  newdata = olddata.gsub(/#{cgi['data']}\n/, '')#指定した文字列を置換する
-  fh = open('../src/'+cgi['fn'], "w")
-  fh.print newdata
-  fh.close
+  print "This cmd=*** is nothing.\n\n"
 end
