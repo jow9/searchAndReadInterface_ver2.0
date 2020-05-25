@@ -1,0 +1,229 @@
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+         -o-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+
+body {
+  margin: 0;
+  background-color: #ffffff;
+  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック", "ヒラギノ丸ゴ ProN", "serif", "YuGothic", "Yu Gothic";
+  /*min-height: 100vh;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-image: url(../src/img/test.png);*/
+}
+
+#main {
+  display: flex;
+  flex-direction: row;
+}
+
+.container {
+  color: #2b2b2b;
+  padding: 20px;
+  font-size: 0;/*要素同士をぴったりくっつけるための処理、不要な改行を消す*/
+}
+
+p {
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  font-size: 15px;
+}
+
+li {
+  list-style: none;
+}
+
+ul {
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+}
+
+.leftclum-wrapper, .leftclum-wrapper .container {
+  width: 230px;
+  min-height: 100%;
+  background-color: #203744;
+}
+
+.rightclum-wrapper, .rightclum-wrapper .container{
+  width: calc(35% - 270px);/*leftclum + MoveViewPageのwidth分引いた値*/
+  min-height: 100%;
+  /*background-color: #f5f5f5;*/
+}
+
+
+.leftclum-wrapper .container, .rightclum-wrapper .container{
+  position: fixed;
+}
+
+.MoveViewPage {
+  width: 40px;
+  min-height: 100vh;
+  background-color: #ff6347;
+  cursor : pointer;
+}
+
+.MoveViewPage:hover {
+  background: #ff7f50;
+}
+
+
+.MoveViewPage .arow_box {
+  position: fixed;
+  height: 100vh;
+  width: 40px;
+}
+
+.MoveViewPage img {
+  width: 30%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom :0;
+  margin:  auto;
+  transform: rotate(180deg);
+}
+
+
+/*
+.MoveViewPage .container{
+  padding: 0;
+  color: #ffffff;
+} */
+
+.centerclum-wrapper {
+  margin: 0px;
+  padding: 0px;
+  width: 65%;
+}
+
+.work {
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  margin: 5px;
+  padding: 3px;
+  cursor : pointer;
+  border: solid 1.5px #5d5d5d;
+  text-align: left;
+}
+
+.work:hover {
+  background-color: #f5f5f5;
+}
+
+/*画像と文字を横に並べる*/
+.work-txt {
+  vertical-align: top;
+  display: inline-block;
+  width: 70%;
+}
+
+.workImg {
+  display: inline-block;
+  /*overflow: hidden;*/
+  width: 30%;
+  max-width: 200px;
+  padding: 10px;
+  float:right;
+}
+
+.workImg img {
+  width: 100%;
+}
+
+.work:after{
+	content: "";
+	clear: both;
+	display: block;
+}
+
+.works input{
+  display: none;
+}
+
+.works .stu0 {
+  opacity: 1.0;
+}
+
+.works .stu1 {
+  opacity: 0.2;
+}
+
+.works .stu2 {
+  display: none;
+}
+
+
+/*leftclum*/
+.leftclum-wrapper h1 {
+  color: white;
+}
+
+
+/*rightclum*/
+.delete_articles {
+  position: absolute;
+  bottom: 80px;
+}
+
+.delete_article {
+  cursor : pointer;
+  margin: 0px 0;
+}
+
+.delete_article h3{
+  margin: 0;
+  font-size: 8px;
+  font-weight: lighter;
+  padding: 1px;
+  opacity: 0.3;
+}
+
+.delete_article h3:hover {
+  font-weight: bold;
+  opacity: 1.0;
+}
+
+.rightclum-wrapper input {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+
+  border: 0px;
+  background: #203744;
+  color: #FFF;
+  width: 50px;
+  height: 50px;
+  border-radius: 5%;
+  text-align: center;
+  font-weight: solid;
+}
+
+.rightclum-wrapper input:hover{
+  background: #4682b4;
+}
+
+.rightclum-wrapper input:active {
+  bottom: 8px;
+}
