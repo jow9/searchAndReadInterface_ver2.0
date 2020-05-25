@@ -31,10 +31,10 @@ elsif (cgi['cmd'] == 'transAll')
   readfh = open('../src/list/readArticleList.txt', "w")#リストをすべて消す
   readfh.close
   noreadfh.close
-  
+
+#読みたい記事、読みたくない記事の登録を行う
 elsif (cgi['cmd'] == 'add')
   fh = open('../src/'+cgi['fn'], "a")
-  #fh.printf(cgi['data']+"\n")
   fh.puts cgi['data']
   fh.close
 
