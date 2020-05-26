@@ -194,10 +194,14 @@ function ClickMainClum(obj) {
     workBlockElement.className = "work-block stu0";
     ReWriteFile("read", obj.id); //データベースからも記事を削除する
     LogWriteFile(obj.id + ":読みたい記事リストから削除");
+
+    //右コラムの要素を削除する
+    document.getElementById("want_read_article_" + obj.id).remove();
   } else {
     workBlockElement.className = "work-block stu1";
     WriteFile("read", obj.id); //データベースに記事を登録する
     LogWriteFile(obj.id + ":読みたい記事リストへ登録");
+    CreateClum(workBlockElement, obj.id, "read"); //右コラムを作成する
   }
 }
 
@@ -218,7 +222,7 @@ function DeleteArticle(obj) {
   if (workBlockElement.className == "work-block stu0") {
     workBlockElement.className = "work-block stu2";
     WriteFile("noread", obj.id); //データベースに記事を登録する
-    CreateRightClum(workBlockElement, obj.id); //右コラムを作成する
+    CreateClum(workBlockElement, obj.id, "delete"); //左コラムを作成する
     LogWriteFile(obj.id + ":読みたくない記事リストへ登録");
   }
 }
@@ -319,31 +323,47 @@ function WriteAllToNoReadFile() {
         }
         let workBlockElement = document.getElementById(list[i]);
         workBlockElement.className = "work-block stu2"; //stu0：未選択状態（デフォルト）, stu1：選択状態（半透明化）, stu2：コラムから除外した状態（非表示）
-        CreateRightClum(workBlockElement, list[i]);
+        CreateClum(workBlockElement, list[i], "delete");
       }
     }
   };
 }
 
 /*
-// 右コラムを作成する
+// 左右のコラムを作成する
+// 引数1（workBlockElement）:選択候補となる記事
+// 引数2（id）:記事のid番号
+// 引数3（select）:左コラムか右コラムの選択（delete:左コラム、read:右コラム）
 */
-function CreateRightClum(workBlockElement, id) {
-  let deleteArticlesElement = document.getElementsByClassName(
-    "delete_articles"
-  );
+function CreateClum(workBlockElement, id, select) {
+  let parentElementName = ""; //親要素名（delete_articles or want_read_articles）
+  let classElementName = ""; //自身のクラス名（delete_article or want_read_article）
+  let ElementStatus = ""; //記事の状態を選択する（noread or read）
 
-  //delete_article要素の作成
-  let deleteArticleElement = document.createElement("div");
-  deleteArticleElement.className = "delete_article";
-  deleteArticleElement.id = id;
-  deleteArticleElement.addEventListener(
+  //selectに応じて上3つの変数の中身を決定する
+  if (select == "delete") {
+    parentElementName = "delete_articles";
+    classElementName = "delete_article";
+    ElementStatus = "noread";
+  } else if (select == "read") {
+    parentElementName = "want_read_articles";
+    classElementName = "want_read_article";
+    ElementStatus = "read";
+  }
+
+  let ArticlesElement = document.getElementsByClassName(parentElementName);
+
+  //記事要素の作成
+  let ArticleElement = document.createElement("div");
+  ArticleElement.className = classElementName;
+  ArticleElement.id = classElementName + "_" + id;
+  ArticleElement.addEventListener(
     "click",
     function () {
       //noreadArticleListファイルから指定要素の削除
-      ReWriteFile("noread", id);
+      ReWriteFile(ElementStatus, id);
       workBlockElement.className = "work-block stu0";
-      deleteArticleElement.remove();
+      ArticleElement.remove();
     },
     false
   );
@@ -354,8 +374,8 @@ function CreateRightClum(workBlockElement, id) {
     "h3"
   )[0].innerHTML;
 
-  deleteArticleElement.appendChild(h3Element);
-  deleteArticlesElement[0].appendChild(deleteArticleElement);
+  ArticleElement.appendChild(h3Element);
+  ArticlesElement[0].appendChild(ArticleElement);
 }
 
 /*
@@ -384,9 +404,10 @@ function ReadListFile(article_abs) {
         let workBlockElement = document.getElementById(list[i]);
         if (article_abs == "read") {
           workBlockElement.className = "work-block stu1";
+          CreateClum(workBlockElement, list[i], "read"); //右コラムを作成する
         } else if (article_abs == "noread") {
           workBlockElement.className = "work-block stu2";
-          CreateRightClum(workBlockElement, list[i]);
+          CreateClum(workBlockElement, list[i], "delete");
         }
       }
     }

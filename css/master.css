@@ -1,16 +1,18 @@
-*, *:before, *:after {
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-         -o-box-sizing: border-box;
-        -ms-box-sizing: border-box;
-            box-sizing: border-box;
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
-
 
 body {
   margin: 0;
   background-color: #ffffff;
-  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック", "ヒラギノ丸ゴ ProN", "serif", "YuGothic", "Yu Gothic";
+  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック",
+    "ヒラギノ丸ゴ ProN", "serif", "YuGothic", "Yu Gothic";
   /*min-height: 100vh;
   background-attachment: fixed;
   background-size: cover;
@@ -26,7 +28,7 @@ body {
 .container {
   color: #2b2b2b;
   padding: 20px;
-  font-size: 0;/*要素同士をぴったりくっつけるための処理、不要な改行を消す*/
+  font-size: 0; /*要素同士をぴったりくっつけるための処理、不要な改行を消す*/
 }
 
 p {
@@ -59,20 +61,22 @@ a {
   color: white;
 }
 
-.leftclum-wrapper, .leftclum-wrapper .container {
+.leftclum-wrapper,
+.leftclum-wrapper .container {
   width: 230px;
   min-height: 100%;
-  background-color: #203744;
+  background-color: #ffffff;
 }
 
-.rightclum-wrapper, .rightclum-wrapper .container{
-  width: calc(35% - 270px);/*leftclum + MoveViewPageのwidth分引いた値*/
+.rightclum-wrapper,
+.rightclum-wrapper .container {
+  width: calc(35% - 270px); /*leftclum + MoveViewPageのwidth分引いた値*/
   min-height: 100%;
   /*background-color: #f5f5f5;*/
 }
 
-
-.leftclum-wrapper .container, .rightclum-wrapper .container{
+.leftclum-wrapper .container,
+.rightclum-wrapper .container {
   position: fixed;
 }
 
@@ -80,13 +84,12 @@ a {
   width: 40px;
   min-height: 100vh;
   background-color: #ff6347;
-  cursor : pointer;
+  cursor: pointer;
 }
 
 .MoveViewPage:hover {
   background: #ff7f50;
 }
-
 
 .MoveViewPage .arow_box {
   position: fixed;
@@ -100,11 +103,10 @@ a {
   left: 0;
   right: 0;
   top: 0;
-  bottom :0;
-  margin:  auto;
+  bottom: 0;
+  margin: auto;
   transform: rotate(180deg);
 }
-
 
 /*
 .MoveViewPage .container{
@@ -123,7 +125,7 @@ a {
   height: calc(100% - 6px);
   margin: 5px;
   padding: 3px;
-  cursor : pointer;
+  cursor: pointer;
   border: solid 1.5px #5d5d5d;
   text-align: left;
 }
@@ -145,25 +147,25 @@ a {
   width: 30%;
   max-width: 200px;
   padding: 10px;
-  float:right;
+  float: right;
 }
 
 .workImg img {
   width: 100%;
 }
 
-.work:after{
-	content: "";
-	clear: both;
-	display: block;
+.work:after {
+  content: "";
+  clear: both;
+  display: block;
 }
 
-.works input{
+.works input {
   display: none;
 }
 
 .works .stu0 {
-  opacity: 1.0;
+  opacity: 1;
 }
 
 .works .stu1 {
@@ -174,37 +176,40 @@ a {
   display: none;
 }
 
-
-/*leftclum*/
-.leftclum-wrapper h1 {
-  color: white;
-}
-
-
-/*rightclum*/
-.delete_articles {
+/*createdclum*/
+.delete_articles,
+.want_read_articles {
   position: absolute;
-  bottom: 80px;
+  bottom: 70px;
 }
 
-.delete_article {
-  cursor : pointer;
+.delete_article,
+.want_read_article {
+  cursor: pointer;
   margin: 0px 0;
 }
 
-.delete_article h3{
+.delete_article h3,
+.want_read_article h3 {
   margin: 0;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: lighter;
   padding: 1px;
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
-.delete_article h3:hover {
+.delete_article h3:hover,
+.want_read_article h3:hover {
   font-weight: bold;
-  opacity: 1.0;
+  opacity: 1;
 }
 
+/*leftclum*/
+.leftclum-wrapper h1 {
+  color: #203744;
+}
+
+/*rightclum*/
 .rightclum-wrapper input {
   position: absolute;
   bottom: 10px;
@@ -212,7 +217,7 @@ a {
 
   border: 0px;
   background: #203744;
-  color: #FFF;
+  color: #fff;
   width: 50px;
   height: 50px;
   border-radius: 5%;
@@ -220,7 +225,7 @@ a {
   font-weight: solid;
 }
 
-.rightclum-wrapper input:hover{
+.rightclum-wrapper input:hover {
   background: #4682b4;
 }
 
