@@ -1,4 +1,8 @@
 var worksElement = document.getElementsByClassName("works");
+var leftClumWrapperElement = document.getElementsByClassName("leftclum-wrapper");
+var rightClumWrapperElement = document.getElementsByClassName("rightclum-wrapper");
+var centerClumWrapperElement = document.getElementsByClassName("centerclum-wrapper");
+var nowActiveClum = "centerclum";
 
 //ページ内で右クリックした際にメニュー表示するデフォルト機能を停止にする（後にこの機能は削除する）
 document.oncontextmenu = function () {
@@ -73,10 +77,64 @@ window.onload = function () {
     false
   );
 
+  //clumの操作
+  leftClumWrapperElement[0].addEventListener(
+    "click",
+    function () {
+      SetNowControlClum("leftclum");
+    },
+    false
+  );
+
+  rightClumWrapperElement[0].addEventListener(
+    "click",
+    function () {
+      SetNowControlClum("rightclum");
+    },
+    false
+  );
+
+  centerClumWrapperElement[0].addEventListener(
+    "click",
+    function () {
+      SetNowControlClum("centerclum");
+    },
+    false
+  );
+
   LogWriteFile("画面のリロード");
   CreateMainClum(selectNewsNum1);
   MainClumIntotxt(selectNewsNum1);
 };
+
+/*
+// now-active-clumを指定し、3つのコラムのうちアクティブ中のコラムを決める
+// clickClum:クリックしたコラムの名前
+*/
+function SetNowControlClum(clickClum) {
+  console.log(clickClum);
+  switch (clickClum) {
+    case "leftclum":
+      leftClumWrapperElement[0].className = "leftclum-wrapper now-active-clum";
+      rightClumWrapperElement[0].className = "rightclum-wrapper no-active-clum";
+      centerClumWrapperElement[0].className = "centerclum-wrapper no-active-clum";
+      break;
+
+    case "rightclum":
+      leftClumWrapperElement[0].className = "leftclum-wrapper no-active-clum";
+      rightClumWrapperElement[0].className = "rightclum-wrapper now-active-clum";
+      centerClumWrapperElement[0].className = "centerclum-wrapper no-active-clum";
+      break;
+
+    case "centerclum":
+      leftClumWrapperElement[0].className = "leftclum-wrapper no-active-clum";
+      rightClumWrapperElement[0].className = "rightclum-wrapper no-active-clum";
+      centerClumWrapperElement[0].className = "centerclum-wrapper now-active-clum";
+      break;
+  }
+  nowActiveClum = clickClum;
+}
+
 
 /*
 //mainClumを生成する
@@ -90,7 +148,9 @@ function CreateMainClum(selectNewsArray) {
     workBlockElement.addEventListener(
       "click",
       function () {
-        ClickMainClum({ id: selectNewsArray[i] });
+        if (nowActiveClum == "centerclum") {
+          ClickMainClum({ id: selectNewsArray[i] });
+        }
       },
       false
     );
@@ -339,16 +399,19 @@ function CreateClum(workBlockElement, id, select) {
   let parentElementName = ""; //親要素名（delete_articles or want_read_articles）
   let classElementName = ""; //自身のクラス名（delete_article or want_read_article）
   let ElementStatus = ""; //記事の状態を選択する（noread or read）
+  let targetClumName = ""; //クリックイベント時の今のアクティブコラムの判断に用いる(rightclum or leftclum)
 
   //selectに応じて上3つの変数の中身を決定する
   if (select == "delete") {
     parentElementName = "delete_articles";
     classElementName = "delete_article";
     ElementStatus = "noread";
+    targetClumName = "leftclum";
   } else if (select == "read") {
     parentElementName = "want_read_articles";
     classElementName = "want_read_article";
     ElementStatus = "read";
+    targetClumName = "rightclum";
   }
 
   let ArticlesElement = document.getElementsByClassName(parentElementName);
@@ -360,10 +423,12 @@ function CreateClum(workBlockElement, id, select) {
   ArticleElement.addEventListener(
     "click",
     function () {
-      //noreadArticleListファイルから指定要素の削除
-      ReWriteFile(ElementStatus, id);
-      workBlockElement.className = "work-block stu0";
-      ArticleElement.remove();
+      if (nowActiveClum == targetClumName) {
+        //Listファイルから指定要素の削除
+        ReWriteFile(ElementStatus, id);
+        workBlockElement.className = "work-block stu0";
+        ArticleElement.remove();
+      }
     },
     false
   );
