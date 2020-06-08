@@ -116,14 +116,14 @@ function SetNowControlClum(clickClum) {
   switch (clickClum) {
     case "leftclum":
       leftClumWrapperElement[0].className = "leftclum-wrapper now-active-clum";
-      rightClumWrapperElement[0].className = "rightclum-wrapper no-active-clum";
-      centerClumWrapperElement[0].className = "centerclum-wrapper no-active-clum";
+      rightClumWrapperElement[0].className = "rightclum-wrapper no-active-clum layer1";
+      centerClumWrapperElement[0].className = "centerclum-wrapper no-active-clum layer2";
       break;
 
     case "rightclum":
-      leftClumWrapperElement[0].className = "leftclum-wrapper no-active-clum";
+      leftClumWrapperElement[0].className = "leftclum-wrapper no-active-clum layer1";
       rightClumWrapperElement[0].className = "rightclum-wrapper now-active-clum";
-      centerClumWrapperElement[0].className = "centerclum-wrapper no-active-clum";
+      centerClumWrapperElement[0].className = "centerclum-wrapper no-active-clum layer2";
       break;
 
     case "centerclum":
