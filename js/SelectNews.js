@@ -359,7 +359,7 @@ function ReWriteFile(article_abs, article_id) {
 }
 
 /*
-// deleteボタンを押したときの処理
+// 読了ボタンを押したときの処理
 // 選択した記事を中央コラムから削除し、ファイルの書き換えを行う
 */
 function WriteAllToNoReadFile() {
@@ -384,6 +384,9 @@ function WriteAllToNoReadFile() {
         let workBlockElement = document.getElementById(list[i]);
         workBlockElement.className = "work-block stu2"; //stu0：未選択状態（デフォルト）, stu1：選択状態（半透明化）, stu2：コラムから除外した状態（非表示）
         CreateClum(workBlockElement, list[i], "delete");
+
+        //要素を探索し削除
+        document.getElementById("want_read_article_" + list[i]).remove();
       }
     }
   };
@@ -439,7 +442,13 @@ function CreateClum(workBlockElement, id, select) {
     "h3"
   )[0].innerHTML;
 
+  let pElement = document.createElement("p");
+  pElement.innerHTML = workBlockElement.getElementsByTagName(
+    "p"
+  )[0].innerHTML;
+
   ArticleElement.appendChild(h3Element);
+  ArticleElement.appendChild(pElement);
   ArticlesElement[0].appendChild(ArticleElement);
 }
 

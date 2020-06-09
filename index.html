@@ -15,7 +15,7 @@
   <div id="main">
     <div class="leftclum-wrapper no-active-clum">
       <div class="container">
-        <h1>Separate News</h1>
+        <h1>読まないリスト</h1>
         <div class="delete_articles"></div>
       </div>
     </div>
@@ -30,10 +30,13 @@
     <!--End : works-wrapper-->
     <div class="rightclum-wrapper no-active-clum">
       <div class="container">
+        <h1>読むリスト</h1>
         <div class="want_read_articles"></div>
-        <input type="button" name="delete_article" value="既読" onClick="WriteAllToNoReadFile()" onfocus="this.blur();" />
+        <!-- <input type="button" name="delete_article" value="読了" onClick="WriteAllToNoReadFile()" onfocus="this.blur();" /> -->
       </div>
     </div>
+    <input class="read_finish_button" type="button" name="delete_article" value="読了" onClick="WriteAllToNoReadFile()"
+      onfocus="this.blur();" />
     <div class="MoveViewPage">
       <div class="arow_box">
         <img src="src/img/arow.png" />
