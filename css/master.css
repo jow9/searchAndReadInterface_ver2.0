@@ -128,18 +128,71 @@ a {
 
 
 .work {
-  width: calc(100% - 6px);
+  width: 100%;
   height: calc(100% - 6px);
   margin: 10px 0px;
   padding: 10px;
   border: solid 1.5px #5d5d5d;
   text-align: left;
+
+  transition: all 250ms 0s ease;
 }
 
 .now-active-clum .work:hover {
   background-color: #dcdcdc;
   cursor: pointer;
 }
+
+.work-block{
+  position: relative;
+}
+
+.to-move-right-clum-button,
+.to-move-left-clum-button {
+  display: none;
+  width: 33%;
+  height: 100%;
+  z-index: 3;
+  opacity: 0.7;
+  position: absolute;
+  transition: all 250ms 0s ease;
+}
+
+.to-move-right-clum-button h2,
+.to-move-left-clum-button h2 {
+  font-size: 30px;
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  -webkit-transform : translateY(-50%);
+  transform : translateY(-50%);
+}
+
+.to-move-right-clum-button:hover,
+.to-move-left-clum-button:hover {
+  opacity: 1;
+}
+
+.selecting .to-move-right-clum-button,
+.selecting .to-move-left-clum-button {
+  display: inline-block;
+}
+
+.to-move-right-clum-button{
+  background: #000080;
+  right: 0;
+  top: 0;
+}
+
+.to-move-left-clum-button{
+  background: #dc143c;
+  left: 0;
+  top: 0;
+}
+
 
 /*画像と文字を横に並べる*/
 .work-txt {
@@ -183,6 +236,7 @@ a {
   display: none;
 }
 
+
 /*createdclum*/
 .delete_articles,
 .want_read_articles {
@@ -194,6 +248,8 @@ a {
   border: 2px solid #2b2b2b;
   margin: 10px 0px;
   padding: 10px;
+
+  transition: all 250ms 0s ease;
 }
 
 .now-active-clum .delete_article:hover,
@@ -245,6 +301,8 @@ a {
   overflow-y: scroll;
   -ms-overflow-style: none;    /* IE, Edge 対応 */
         scrollbar-width: none;       /* Firefox 対応 */
+  
+  transition: all 250ms 0s ease;
 }
 .now-active-clum::-webkit-scrollbar {  /* Chrome, Safari 対応 */
   display:none;
