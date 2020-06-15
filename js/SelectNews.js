@@ -4,6 +4,8 @@ var rightClumWrapperElement = document.getElementsByClassName("rightclum-wrapper
 var centerClumWrapperElement = document.getElementsByClassName("centerclum-wrapper");
 var nowActiveClum = "centerclum";
 
+var GerneList = []; //ジャンルリスト
+
 //ページ内で右クリックした際にメニュー表示するデフォルト機能を停止にする（後にこの機能は削除する）
 // document.oncontextmenu = function () {
 //   return false;
@@ -125,7 +127,7 @@ function DeleteToMoveClum() {
   }
   for (let i = 0; i < length; i = i + 1) {
     if (selectingElement[0] == this.undefined) return;
-    selectingElement[0].className = "work-block stu0";
+    selectingElement[0].classList.remove("selecting");
     console.log(i);
   }
 }
@@ -174,11 +176,11 @@ function CreateMainClum(selectNewsArray) {
       "click",
       function (e) {
         DeleteToMoveClum();//別の記事の選択中だった場合それを削除
-        if (nowActiveClum == "centerclum" && workBlockElement.className == "work-block stu0") {
-          workBlockElement.className = "work-block stu0 selecting";
+        if (nowActiveClum == "centerclum" && workBlockElement.classList.contains("selecting") == false) {
+          workBlockElement.classList.add("selecting");
           e.stopPropagation();
-        } else if (nowActiveClum == "centerclum" && workBlockElement.className == "work-block stu0 selecting") {
-          workBlockElement.className = "work-block stu0";
+        } else if (nowActiveClum == "centerclum" && workBlockElement.classList.contains("selecting")) {
+          workBlockElement.classList.remove("selecting");
           e.stopPropagation();
         }
       },
@@ -275,7 +277,7 @@ function MainClumIntotxt(selectNewsArray) {
   for (var i = 1; i < selectNewsArray.length; i++) {
     idArray += "," + selectNewsArray[i];
   }
-  let fileName = "&fn=" + idArray;
+  let fileName = "&fn=" + idArray;//cmd=readArray&fn=001,002,003
 
   xmlHttpReq.open("GET", cmd + fileName, true); //ここで指定するパスは、index.htmlファイルを基準にしたときの相対パス
   xmlHttpReq.responseType = "json";
@@ -288,19 +290,27 @@ function MainClumIntotxt(selectNewsArray) {
       console.log(article_json);
 
       for (let i = 0; i < Object.keys(article_json).length; i++) {
-        //1行目を見出しとする
+        //1行目をジャンル、2行目を見出し、3行目以降を本文として扱う
+        //行単位に文章を分割する
         let txt_array = article_json[selectNewsArray[i]].split(/\r?\n/);
+        document.getElementsByClassName("work-block")[i].classList.add(txt_array[0]);
+        GerneList.push(txt_array[0]);
 
         //work-txt要素の作成
         let work_txtElement = document.createElement("div");
-        work_txtElement.className = "work-txt";
+        work_txtElement.className = "work-txt";//クラス名にジャンルを追加する
+        let h4Element = document.createElement("h4");
         let h3Element = document.createElement("h3");
         let pElement = document.createElement("p");
-        h3Element.innerHTML = txt_array[0];
-        let index = txt_array[1].indexOf("。"); //句点で本文を区切り最初の一文をアブストとして扱う
-        pElement.innerHTML = txt_array[1].substring(0, index) + "。";
+
+        h4Element.innerHTML = "#" + txt_array[0];
+        h3Element.innerHTML = txt_array[1];
+        let index = txt_array[2].indexOf("。"); //句点で本文を区切り最初の一文をアブストとして扱う
+        pElement.innerHTML = txt_array[2].substring(0, index) + "。";
+
 
         work_txtElement.appendChild(h3Element);
+        work_txtElement.appendChild(h4Element);
         work_txtElement.appendChild(pElement);
         workElements[i].insertBefore(
           work_txtElement,
@@ -313,14 +323,96 @@ function MainClumIntotxt(selectNewsArray) {
           ReadListFile("noread");
         }
       }
+
+      // ジャンルリストに重複が生まれないように余分な要素を削除
+      GerneList = GerneList.filter(function (x, i, self) {
+        return self.indexOf(x) === i;
+      });
+      CreatDropDownMenu(GerneList);
+      console.log(GerneList);
     }
   };
 }
 
+
 /*
-//mainClumを左クリックした際に、色を変更し読みたい記事として扱う
-//既に選択されている記事の場合は、元の色に戻す
-//色がついた状態を読みたい記事として登録している状態として扱う
+//ジャンルリストをもとにドロップダウンメニューを作成
+//list:配列を受け取りその要素をもとにドロップダウンメニューを作成
+*/
+function CreatDropDownMenu(list) {
+  let selectElement = document.createElement("select");
+  selectElement.name = "gerne";
+  selectElement.className = "drop-list";
+
+  let optionAllElement = document.createElement("option");
+  optionAllElement.value = "すべて";
+  optionAllElement.innerHTML = "すべて";
+  selectElement.appendChild(optionAllElement);
+
+  for (let i = 0; i < list.length; i++) {
+    let optionElement = document.createElement("option");
+    optionElement.value = list[i];
+    optionElement.innerHTML = list[i];
+
+    selectElement.appendChild(optionElement);
+  }
+
+  //親要素に登録
+  let centerclum = document.getElementsByClassName("centerclum-wrapper")[0].getElementsByClassName("container");
+  let rightclum = document.getElementsByClassName("rightclum-wrapper")[0].getElementsByClassName("container");
+  let leftclum = document.getElementsByClassName("leftclum-wrapper")[0].getElementsByClassName("container");
+  centerclum[0].insertBefore(selectElement.cloneNode(true), centerclum[0].getElementsByTagName("h1")[0]);
+  rightclum[0].insertBefore(selectElement.cloneNode(true), rightclum[0].getElementsByTagName("h1")[0]);
+  leftclum[0].insertBefore(selectElement.cloneNode(true), leftclum[0].getElementsByTagName("h1")[0]);
+
+  centerclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
+    //選択されたoption番号を取得
+    var index = this.selectedIndex;
+    SortArticle(centerclum[0], GerneList[index - 1]);
+  });
+
+  rightclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
+    //選択されたoption番号を取得
+    var index = this.selectedIndex;
+    SortArticle(rightclum[0], GerneList[index - 1]);
+  });
+
+  leftclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
+    //選択されたoption番号を取得
+    var index = this.selectedIndex;
+    SortArticle(leftclum[0], GerneList[index - 1]);
+  });
+}
+
+
+/*
+// ドロップボックスを操作した時のイベント
+// 記事をソートする
+// parentElement:親要素を特定（rightclum or centerclum or leftclumのどれか）
+// selectedOptionName:string型、記事のジャンル名を指定する
+*/
+function SortArticle(parentElement, selectedOptionName) {
+  let nowsortselectedElement = parentElement.getElementsByClassName("now-sort-selected");
+  let selectedElement = parentElement.getElementsByClassName(selectedOptionName);
+
+  console.log(nowsortselectedElement[3]);
+
+  let nowsortlen = nowsortselectedElement.length;
+  //クラス名の初期化
+  for (let i = 0; i < nowsortlen; i++) {
+    nowsortselectedElement[0].classList.remove('now-sort-selected');
+    console.log(nowsortselectedElement.length);
+  }
+
+  //選択したジャンルの要素にクラス名を追加
+  for (let i = 0; i < selectedElement.length; i++) {
+    selectedElement[i].classList.add("now-sort-selected");
+  }
+}
+
+
+/*
+//「読む」をクリックした場合対象とする記事を読みたい記事として扱う
 */
 function ClickMainClum(obj) {
   console.log("mainClumeで" + obj.id + "番の記事をリスト化する");
@@ -328,7 +420,8 @@ function ClickMainClum(obj) {
   /*要素の取得*/
   let workBlockElement = document.getElementById(obj.id);
 
-  workBlockElement.className = "work-block stu2";
+  workBlockElement.classList.remove("stu0");
+  workBlockElement.classList.add("stu2");
   WriteFile("read", obj.id); //データベースに記事を登録する
   LogWriteFile(obj.id + ":読みたい記事リストへ登録");
   CreateClum(workBlockElement, obj.id, "read"); //右コラムを作成する
@@ -363,7 +456,8 @@ function DeleteArticle(obj) {
   /*要素の取得*/
   let workBlockElement = document.getElementById(obj.id);
 
-  workBlockElement.className = "work-block stu2";
+  workBlockElement.classList.remove("stu0");
+  workBlockElement.classList.add("stu2");
   WriteFile("noread", obj.id); //データベースに記事を登録する
   CreateClum(workBlockElement, obj.id, "delete"); //左コラムを作成する
   LogWriteFile(obj.id + ":読みたくない記事リストへ登録");
@@ -520,7 +614,8 @@ function CreateClum(workBlockElement, id, select) {
       if (nowActiveClum == targetClumName) {
         //Listファイルから指定要素の削除
         ReWriteFile(ElementStatus, id);
-        workBlockElement.className = "work-block stu0";
+        workBlockElement.classList.remove("stu2");
+        workBlockElement.classList.add("stu0");
         ArticleElement.remove();
       }
     },
@@ -568,10 +663,12 @@ function ReadListFile(article_abs) {
         console.log(list[i] + "番目の記事を読みたいリストに読み込む");
         let workBlockElement = document.getElementById(list[i]);
         if (article_abs == "read") {
-          workBlockElement.className = "work-block stu2";
+          workBlockElement.classList.remove("stu0");
+          workBlockElement.classList.add("stu2");
           CreateClum(workBlockElement, list[i], "read"); //右コラムを作成する
         } else if (article_abs == "noread") {
-          workBlockElement.className = "work-block stu2";
+          workBlockElement.classList.remove("stu0");
+          workBlockElement.classList.add("stu2");
           CreateClum(workBlockElement, list[i], "delete");
         }
       }

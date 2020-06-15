@@ -45,8 +45,8 @@ elsif (cgi['cmd'] == 'readArray')
 
   for id in articleArray do
     data_array.each {|data|
-      if (data.include? id)
-        result.store(id, data[1] + "\n" + data[2]) #データの一行目をタイトル、2行目以降を本文として扱う
+      if (data.include? id) # 注意点：001,002という文字列で検索を行うため、データをエクセルで開くなどして1,2といったidに変更されると検索対象から外れる
+        result.store(id, data[1] + "\n" + data[2] + "\n" + data[3]) #データの一行目をジャンル、2行目をタイトル、3行目以降を本文として扱う
       end
     }
 
