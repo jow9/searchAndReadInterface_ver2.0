@@ -5,9 +5,9 @@ var centerClumWrapperElement = document.getElementsByClassName("centerclum-wrapp
 var nowActiveClum = "centerclum";
 
 //ページ内で右クリックした際にメニュー表示するデフォルト機能を停止にする（後にこの機能は削除する）
-document.oncontextmenu = function () {
-  return false;
-};
+// document.oncontextmenu = function () {
+//   return false;
+// };
 
 var selectNewsNum1 = [
   "001",
@@ -107,6 +107,30 @@ window.onload = function () {
   MainClumIntotxt(selectNewsNum1);
 };
 
+//window内でクリックされたら
+window.onclick = function () {
+  DeleteToMoveClum();
+}
+
+
+/*
+//「to-move-right(left)-clum」が表示されている場合消す
+*/
+function DeleteToMoveClum() {
+  let selectingElement = document.getElementsByClassName("work-block stu0 selecting");
+  let length = selectingElement.length;
+  if (length == 0) {
+    console.log("対象の記事が存在しません");
+    return;
+  }
+  for (let i = 0; i < length; i = i + 1) {
+    if (selectingElement[0] == this.undefined) return;
+    selectingElement[0].className = "work-block stu0";
+    console.log(i);
+  }
+}
+
+
 /*
 // now-active-clumを指定し、3つのコラムのうちアクティブ中のコラムを決める
 // clickClum:クリックしたコラムの名前
@@ -148,11 +172,14 @@ function CreateMainClum(selectNewsArray) {
 
     workBlockElement.addEventListener(
       "click",
-      function () {
+      function (e) {
+        DeleteToMoveClum();//別の記事の選択中だった場合それを削除
         if (nowActiveClum == "centerclum" && workBlockElement.className == "work-block stu0") {
-          workBlockElement.className = "work-block stu0 selecting"
+          workBlockElement.className = "work-block stu0 selecting";
+          e.stopPropagation();
         } else if (nowActiveClum == "centerclum" && workBlockElement.className == "work-block stu0 selecting") {
-          workBlockElement.className = "work-block stu0"
+          workBlockElement.className = "work-block stu0";
+          e.stopPropagation();
         }
       },
       false
@@ -192,9 +219,10 @@ function CreateMainClum(selectNewsArray) {
 
     toMoveRightClumElement.addEventListener(
       "click",
-      function () {
+      function (e) {
         if (nowActiveClum == "centerclum") {
           ClickMainClum({ id: selectNewsArray[i] });
+          e.stopPropagation();
         }
       },
       false
@@ -202,9 +230,10 @@ function CreateMainClum(selectNewsArray) {
 
     toMoveLeftClumElement.addEventListener(
       "click",
-      function () {
+      function (e) {
         if (nowActiveClum == "centerclum") {
           DeleteArticle({ id: selectNewsArray[i] });
+          e.stopPropagation();
         }
       },
       false
