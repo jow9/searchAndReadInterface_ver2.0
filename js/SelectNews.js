@@ -4,7 +4,7 @@ var rightClumWrapperElement = document.getElementsByClassName("rightclum-wrapper
 var centerClumWrapperElement = document.getElementsByClassName("centerclum-wrapper");
 var nowActiveClum = "centerclum";
 
-var GerneList = []; //ジャンルリスト
+var GerneList = ["すべて"]; //ジャンルリスト
 
 //ページ内で右クリックした際にメニュー表示するデフォルト機能を停止にする（後にこの機能は削除する）
 // document.oncontextmenu = function () {
@@ -169,7 +169,7 @@ function CreateMainClum(selectNewsArray) {
   for (let i = 0; i < selectNewsArray.length; i++) {
     //work-block要素の作成
     let workBlockElement = document.createElement("div");
-    workBlockElement.className = "work-block stu0"; //stu0：未選択状態（デフォルト）, stu1：選択状態（半透明化）, stu2：コラムから除外した状態（非表示）
+    workBlockElement.className = "work-block stu0 now-sort-selected"; //stu0：未選択状態（デフォルト）, stu1：選択状態（半透明化）, stu2：コラムから除外した状態（非表示）
     workBlockElement.id = selectNewsArray[i];
 
     workBlockElement.addEventListener(
@@ -349,7 +349,7 @@ function CreatDropDownMenu(list) {
   optionAllElement.innerHTML = "すべて";
   selectElement.appendChild(optionAllElement);
 
-  for (let i = 0; i < list.length; i++) {
+  for (let i = 1; i < list.length; i++) {
     let optionElement = document.createElement("option");
     optionElement.value = list[i];
     optionElement.innerHTML = list[i];
@@ -368,19 +368,19 @@ function CreatDropDownMenu(list) {
   centerclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
     //選択されたoption番号を取得
     var index = this.selectedIndex;
-    SortArticle(centerclum[0], GerneList[index - 1]);
+    SortArticle(centerclum[0].getElementsByClassName("works")[0], GerneList[index]);
   });
 
   rightclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
     //選択されたoption番号を取得
     var index = this.selectedIndex;
-    SortArticle(rightclum[0], GerneList[index - 1]);
+    SortArticle(rightclum[0].getElementsByClassName("want_read_articles")[0], GerneList[index]);
   });
 
   leftclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
     //選択されたoption番号を取得
     var index = this.selectedIndex;
-    SortArticle(leftclum[0], GerneList[index - 1]);
+    SortArticle(leftclum[0].getElementsByClassName("delete_articles")[0], GerneList[index]);
   });
 }
 
@@ -392,21 +392,26 @@ function CreatDropDownMenu(list) {
 // selectedOptionName:string型、記事のジャンル名を指定する
 */
 function SortArticle(parentElement, selectedOptionName) {
-  let nowsortselectedElement = parentElement.getElementsByClassName("now-sort-selected");
-  let selectedElement = parentElement.getElementsByClassName(selectedOptionName);
+  console.log(selectedOptionName);
+  if (selectedOptionName == "すべて") {
+    let allElement = parentElement.children;
+    for (let i = 0; i < allElement.length; i++) {
+      allElement[i].classList.add("now-sort-selected");
+    }
+  } else {
+    let nowsortselectedElement = parentElement.getElementsByClassName("now-sort-selected");
+    let selectedElement = parentElement.getElementsByClassName(selectedOptionName);
 
-  console.log(nowsortselectedElement[3]);
+    //クラス名の初期化
+    let nowsortlen = nowsortselectedElement.length;
+    for (let i = 0; i < nowsortlen; i++) {
+      nowsortselectedElement[0].classList.remove('now-sort-selected');
+    }
 
-  let nowsortlen = nowsortselectedElement.length;
-  //クラス名の初期化
-  for (let i = 0; i < nowsortlen; i++) {
-    nowsortselectedElement[0].classList.remove('now-sort-selected');
-    console.log(nowsortselectedElement.length);
-  }
-
-  //選択したジャンルの要素にクラス名を追加
-  for (let i = 0; i < selectedElement.length; i++) {
-    selectedElement[i].classList.add("now-sort-selected");
+    //選択したジャンルの要素にクラス名を追加
+    for (let i = 0; i < selectedElement.length; i++) {
+      selectedElement[i].classList.add("now-sort-selected");
+    }
   }
 }
 
@@ -606,7 +611,7 @@ function CreateClum(workBlockElement, id, select) {
 
   //記事要素の作成
   let ArticleElement = document.createElement("div");
-  ArticleElement.className = classElementName;
+  ArticleElement.className = classElementName + " " + "now-sort-selected";
   ArticleElement.id = classElementName + "_" + id;
   ArticleElement.addEventListener(
     "click",
@@ -622,18 +627,27 @@ function CreateClum(workBlockElement, id, select) {
     false
   );
 
-  //h3要素の作成
+  //h3要素（見出し）の作成
   let h3Element = document.createElement("h3");
   h3Element.innerHTML = workBlockElement.getElementsByTagName(
     "h3"
   )[0].innerHTML;
 
+  //h4要素（ジャンル）の作成
+  let h4Element = document.createElement("h4");
+  h4Element.innerHTML = workBlockElement.getElementsByTagName(
+    "h4"
+  )[0].innerHTML;
+  ArticleElement.classList.add(h4Element.innerHTML.replace("#", ""));
+
+  //p要素（スニペッド）の作成
   let pElement = document.createElement("p");
   pElement.innerHTML = workBlockElement.getElementsByTagName(
     "p"
   )[0].innerHTML;
 
   ArticleElement.appendChild(h3Element);
+  ArticleElement.appendChild(h4Element);
   ArticleElement.appendChild(pElement);
   ArticlesElement[0].appendChild(ArticleElement);
 }

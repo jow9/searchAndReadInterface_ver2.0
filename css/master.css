@@ -258,11 +258,11 @@ a {
   width: 70%;
 }
 
-.work-txt h3 {
+h3 {
   display: inline-block;
 }
 
-.work-txt h4 {
+h4 {
   color: #4682b4;
   font-style:italic;
   font-size: 12px;
@@ -312,11 +312,6 @@ a {
   top: 10px;
 }
 
-.now-sort-selected{
-  background-color: #203744;
-  color: #fff;
-}
-
 
 /*createdclum*/
 .delete_articles,
@@ -349,6 +344,11 @@ a {
   font-size: 12px;
 }
 
+.work-block:not(.now-sort-selected),
+.want_read_article:not(.now-sort-selected),
+.delete_article:not(.now-sort-selected){
+  display: none;
+}
 
 
 /*leftclum*/
