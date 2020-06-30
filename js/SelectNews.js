@@ -199,17 +199,17 @@ function CreateMainClum() {
     workElement.className = "work";
 
     //workImg要素の作成
-    let workImgElement = document.createElement("div");
-    workImgElement.className = "workImg";
-    let imgElement = document.createElement("img");
-    //imgElement.src = "src/img/" + articleID + ".png";
-    imgElement.onerror = function () {
-      this.style.display = "none";
-    };
+    // let workImgElement = document.createElement("div");
+    // workImgElement.className = "workImg";
+    // let imgElement = document.createElement("img");
+    // imgElement.src = "src/img/" + articleID + ".png";
+    // imgElement.onerror = function () {
+    //   this.style.display = "none";
+    // };
 
     //構造体の制作
-    workImgElement.appendChild(imgElement);
-    workElement.appendChild(workImgElement);
+    //workImgElement.appendChild(imgElement);
+    //workElement.appendChild(workImgElement);
     workBlockElement.appendChild(workElement);
     workBlockElement.appendChild(toMoveRightClumElement);
     workBlockElement.appendChild(toMoveLeftClumElement);
@@ -257,8 +257,18 @@ function MainClumIntotxt() {
 
         h4Element.innerHTML = "#" + txt_array[0];
         h3Element.innerHTML = txt_array[1];
-        let index = txt_array[2].indexOf("。"); //句点で本文を区切り最初の一文をアブストとして扱う
-        pElement.innerHTML = txt_array[2].substring(0, index) + "。";
+        let index = txt_array[3].indexOf("。"); //句点で本文を区切り最初の一文をアブストとして扱う
+        pElement.innerHTML = txt_array[3].substring(0, index) + "。";
+
+
+        //img-block要素の作成
+        let workImgElement = document.createElement("div");
+        workImgElement.className = "workImg";
+        let imgElement = document.createElement("img");
+        imgElement.src = txt_array[2];
+        imgElement.onerror = function () {
+          this.style.display = "none";
+        };
 
 
         work_txtElement.appendChild(h3Element);
@@ -268,6 +278,9 @@ function MainClumIntotxt() {
           work_txtElement,
           workElements[i].firstChild
         );
+
+        workImgElement.appendChild(imgElement);
+        workElements[i].appendChild(workImgElement);
 
         //画面要素の状態の編集
         if (i == workElements.length - 1) {

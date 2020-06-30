@@ -45,7 +45,7 @@ elsif (cgi['cmd'] == 'readArray')
 
   id = 0
   data_array.each {|data|
-    result.store("%03d" % id, data[1] + "\n" + data[2] + "\n" + data[3]) #データの一行目をジャンル、2行目をタイトル、3行目以降を本文として扱う
+    result.store("%03d" % id, data[1] + "\n" + data[2] + "\n" + data[3] + "\n" + data[4]) #データの一行目をジャンル、2行目をタイトル、3行目以降を本文として扱う
     id += 1
   }
 
