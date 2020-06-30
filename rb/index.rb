@@ -39,22 +39,21 @@ elsif (cgi['cmd'] == 'add')
   fh.close
 
 elsif (cgi['cmd'] == 'readArray')
-  articleArray = cgi['fn'].split(",")
+  #articleArray = cgi['fn'].split(",")
   result = {}
-  data_array = CSV.read("../src/article/dummy_article.csv")
+  data_array = CSV.read("../src/article/livedoor_news_data_20200630.csv")
 
-  for id in articleArray do
-    data_array.each {|data|
-      if (data.include? id) # 注意点：001,002という文字列で検索を行うため、データをエクセルで開くなどして1,2といったidに変更されると検索対象から外れる
-        result.store(id, data[1] + "\n" + data[2] + "\n" + data[3]) #データの一行目をジャンル、2行目をタイトル、3行目以降を本文として扱う
-      end
-    }
+  id = 0
+  data_array.each {|data|
+    result.store("%03d" % id, data[1] + "\n" + data[2] + "\n" + data[3]) #データの一行目をジャンル、2行目をタイトル、3行目以降を本文として扱う
+    id += 1
+  }
 
-    #file_name = '../src/article/' + id + '.txt'
-    #fh = open(file_name, "r")#ここと38行でエラーが発生している。原因は読み込んだデータがJSONにする際にUTF-8以外の文字列を含んでいるから上手くエンコードされない
-    #result.store(id, fh.read.force_encoding("UTF-8"))
-    #fh.close
-  end
+  #file_name = '../src/article/' + id + '.txt'
+  #fh = open(file_name, "r")#ここと38行でエラーが発生している。原因は読み込んだデータがJSONにする際にUTF-8以外の文字列を含んでいるから上手くエンコードされない
+  #result.store(id, fh.read.force_encoding("UTF-8"))
+  #fh.close
+  
   print result.to_json
 elsif (cgi['cmd'] == 'logSave')
   fh = open('../src/logData/log.txt', "a")

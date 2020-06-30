@@ -9,66 +9,12 @@ var mainGerneCounter = [];
 var readGerneCounter = [];
 var noreadGerneCounter = [];
 
+var data_max_num = 35; //データの上限を決める
+
 //ページ内で右クリックした際にメニュー表示するデフォルト機能を停止にする（後にこの機能は削除する）
 // document.oncontextmenu = function () {
 //   return false;
 // };
-
-var selectNewsNum1 = [
-  "001",
-  "003",
-  "005",
-  "007",
-  "009",
-  "011",
-  "013",
-  "015",
-  "017",
-  "019",
-  "021",
-  "023",
-  "025",
-  "027",
-  "029",
-  "031",
-  "033",
-  "035",
-  "037",
-  "039",
-  "041",
-  "043",
-  "045",
-  "047",
-  "049",
-]; //現在ファイル名として数字を指定しているが、実際にプログラム上で利用する際は0から順番の添字として利用している
-
-var selectNewsNum2 = [
-  "000",
-  "002",
-  "004",
-  "006",
-  "008",
-  "010",
-  "012",
-  "014",
-  "016",
-  "018",
-  "020",
-  "022",
-  "024",
-  "026",
-  "028",
-  "030",
-  "032",
-  "034",
-  "036",
-  "038",
-  "040",
-  "042",
-  "044",
-  "046",
-  "048",
-]; //現在ファイル名として数字を指定しているが、実際にプログラム上で利用する際は0から順番の添字として利用している
 
 window.onload = function () {
   console.log("Onload SelectNews.js file");
@@ -108,8 +54,8 @@ window.onload = function () {
   );
 
   LogWriteFile("画面のリロード");
-  CreateMainClum(selectNewsNum1);
-  MainClumIntotxt(selectNewsNum1);
+  CreateMainClum();
+  MainClumIntotxt();
 };
 
 //window内でクリックされたら
@@ -168,12 +114,14 @@ function SetNowControlClum(clickClum) {
 /*
 //mainClumを生成する
 */
-function CreateMainClum(selectNewsArray) {
-  for (let i = 0; i < selectNewsArray.length; i++) {
+function CreateMainClum() {
+  for (let i = 0; i < data_max_num; i++) {
+    let articleID = ('000' + i).slice(-3);
+
     //work-block要素の作成
     let workBlockElement = document.createElement("div");
     workBlockElement.className = "work-block stu0 now-sort-selected"; //stu0：未選択状態（デフォルト）, stu1：選択状態（半透明化）, stu2：コラムから除外した状態（非表示）
-    workBlockElement.id = selectNewsArray[i];
+    workBlockElement.id = articleID;
 
     workBlockElement.addEventListener(
       "click",
@@ -226,7 +174,7 @@ function CreateMainClum(selectNewsArray) {
       "click",
       function (e) {
         if (nowActiveClum == "centerclum") {
-          ClickMainClum({ id: selectNewsArray[i] });
+          ClickMainClum({ id: articleID });
           e.stopPropagation();
         }
       },
@@ -237,7 +185,7 @@ function CreateMainClum(selectNewsArray) {
       "click",
       function (e) {
         if (nowActiveClum == "centerclum") {
-          DeleteArticle({ id: selectNewsArray[i] });
+          DeleteArticle({ id: articleID });
           e.stopPropagation();
         }
       },
@@ -254,7 +202,7 @@ function CreateMainClum(selectNewsArray) {
     let workImgElement = document.createElement("div");
     workImgElement.className = "workImg";
     let imgElement = document.createElement("img");
-    imgElement.src = "src/img/" + selectNewsArray[i] + ".png";
+    //imgElement.src = "src/img/" + articleID + ".png";
     imgElement.onerror = function () {
       this.style.display = "none";
     };
@@ -272,17 +220,17 @@ function CreateMainClum(selectNewsArray) {
 /*
 // メインコラムにテキストを挿入する
 */
-function MainClumIntotxt(selectNewsArray) {
+function MainClumIntotxt() {
   let workElements = document.getElementsByClassName("work");
   let xmlHttpReq = new XMLHttpRequest();
   let cmd = "./rb/index.rb?cmd=readArray";
-  let idArray = selectNewsArray[0];
-  for (var i = 1; i < selectNewsArray.length; i++) {
-    idArray += "," + selectNewsArray[i];
-  }
-  let fileName = "&fn=" + idArray;//cmd=readArray&fn=001,002,003
+  // let idArray = selectNewsArray[0];
+  // for (var i = 1; i < selectNewsArray.length; i++) {
+  //   idArray += "," + selectNewsArray[i];
+  // }
+  // let fileName = "&fn=" + idArray;//cmd=readArray&fn=001,002,003
 
-  xmlHttpReq.open("GET", cmd + fileName, true); //ここで指定するパスは、index.htmlファイルを基準にしたときの相対パス
+  xmlHttpReq.open("GET", cmd, true); //ここで指定するパスは、index.htmlファイルを基準にしたときの相対パス
   xmlHttpReq.responseType = "json";
   xmlHttpReq.send(null); //サーバーへのリクエストを送信する、引数はPOSTのときのみ利用
 
@@ -293,10 +241,10 @@ function MainClumIntotxt(selectNewsArray) {
       console.log(article_json);
 
       let tempGerneList = ["すべて"];
-      for (let i = 0; i < Object.keys(article_json).length; i++) {
+      for (let i = 0; i < data_max_num; i++) {
         //1行目をジャンル、2行目を見出し、3行目以降を本文として扱う
         //行単位に文章を分割する
-        let txt_array = article_json[selectNewsArray[i]].split(/\r?\n/);
+        let txt_array = article_json[('000' + i).slice(-3)].split(/\r?\n/);
         document.getElementsByClassName("work-block")[i].classList.add(txt_array[0]);
         tempGerneList.push(txt_array[0]);
 
