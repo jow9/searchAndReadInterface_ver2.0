@@ -41,7 +41,7 @@ elsif (cgi['cmd'] == 'add')
 elsif (cgi['cmd'] == 'readArray')
   #articleArray = cgi['fn'].split(",")
   result = {}
-  data_array = CSV.read("../src/article/livedoor_news_data_20200630.csv")
+  data_array = CSV.read("../src/article/livedoor_news_data_202006302026.csv")
 
   id = 0
   data_array.each {|data|

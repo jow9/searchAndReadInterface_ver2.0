@@ -9,7 +9,7 @@ var mainGerneCounter = [];
 var readGerneCounter = [];
 var noreadGerneCounter = [];
 
-var data_max_num = 35; //データの上限を決める
+var data_max_num = 45; //データの上限を決める
 
 //ページ内で右クリックした際にメニュー表示するデフォルト機能を停止にする（後にこの機能は削除する）
 // document.oncontextmenu = function () {
