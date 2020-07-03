@@ -245,7 +245,7 @@ function MainClumIntotxt() {
         //1行目をジャンル、2行目を見出し、3行目以降を本文として扱う
         //行単位に文章を分割する
         let txt_array = article_json[('000' + i).slice(-3)].split(/\r?\n/);
-        document.getElementsByClassName("work-block")[i].classList.add(txt_array[0]);
+        document.getElementsByClassName("work-block")[i].classList.add(txt_array[0]);//ジャンルの登録
         tempGerneList.push(txt_array[0]);
 
         //work-txt要素の作成

@@ -1,7 +1,7 @@
 /*要素の取得*/
 var worksElement = document.getElementsByClassName('works');
 var readWorksElement = document.getElementsByClassName('read-works');//右コラムの取得
-
+var GerneList = ["すべて"]
 
 window.onload = function () {
   /*ページ遷移処理を作成*/
@@ -49,14 +49,14 @@ function CreateClumBase(list) {
 
     /*rightClumを作成する*/
     let txtElement = document.createElement('a');
-    txtElement.className = 'read-work';
+    txtElement.className = 'read-work now-sort-selected';
     txtElement.href = "#" + list[i];
     readWorksElement[0].appendChild(txtElement);
 
     /*mainClumを作成する*/
     //work-block要素の作成
     let workBlockElement = document.createElement('div');
-    workBlockElement.className = 'work-block';
+    workBlockElement.className = 'work-block now-sort-selected';
 
     //work要素の作成
     let workElement = document.createElement('div');
@@ -80,7 +80,7 @@ function ClumIntotxt(list) {
   let txtElements = document.getElementsByClassName('read-work');
   let xmlHttpReq = new XMLHttpRequest();
   let cmd = "./rb/index.rb?cmd=readArray";
-  console.log(list[0]);
+
   let idArray = list[0];
   for (var i = 1; i < list.length - 1; i++) {
     idArray += "," + list[i];
@@ -98,41 +98,120 @@ function ClumIntotxt(list) {
       let article_json = xmlHttpReq.response;
       console.log(article_json);
 
-      for (let i = 0; i < Object.keys(article_json).length; i++) {
+      let tempGerneList = ["すべて"];
+      for (let i = 0; i < list.length - 1; i++) {
         //1行目を見出しとする
         let txt_array = article_json[list[i]].split(/\r?\n/);
-        console.log(txt_array[0]);
+        console.log(txt_array[1]);
 
-        /*rightclum要素の作成*/
+        //ジャンルの登録
+        document.getElementsByClassName("work-block")[i].classList.add(txt_array[0]);
+        tempGerneList.push(txt_array[0]);//ジャンルリスト
+
+        /*leftclum要素の作成*/
+        txtElements[i].classList.add(txt_array[0]);
         var h3Element = document.createElement('h3');
-        h3Element.innerHTML = txt_array[0];
+        h3Element.innerHTML = txt_array[1];
         txtElements[i].appendChild(h3Element);
 
         /*mainClumの作成*/
         //work-txt要素の作成
         let h2Element = document.createElement('h2');
+        let h4Element = document.createElement("h4");
         let pElement = document.createElement('p');
-        h2Element.innerHTML = txt_array[0];
-        for (let j = 1; j < txt_array.length; j++) {
+        h2Element.innerHTML = txt_array[1];
+        h4Element.innerHTML = "#" + txt_array[0];
+        for (let j = 3; j < txt_array.length; j++) {
           pElement.innerHTML += txt_array[j];
         }
 
         //workImg要素の作成
         let imgElement = document.createElement('img');
-        imgElement.src = "src/img/" + list[i] + ".png";
+        imgElement.src = txt_array[2];
         imgElement.onerror = function () {
           this.style.display = "none";
         }
 
+        workElements[i].appendChild(h4Element);
         workElements[i].appendChild(h2Element);
         workElements[i].appendChild(imgElement);
         workElements[i].appendChild(pElement);
       }
+
+      // ジャンルリストに重複が生まれないように余分な要素を削除
+      GerneList = tempGerneList.filter(function (x, i, self) {
+        return self.indexOf(x) === i;
+      });
+      console.log(GerneList);
+      CreatDropDownMenu(GerneList);
+    }
+  }
+
+}
+
+/*
+//ジャンルリストをもとにドロップダウンメニューを作成
+//list:配列を受け取りその要素をもとにドロップダウンメニューを作成
+*/
+function CreatDropDownMenu(list) {
+  let selectElement = document.createElement("select");
+  selectElement.name = "gerne";
+  selectElement.className = "drop-list";
+
+  let optionAllElement = document.createElement("option");
+  optionAllElement.value = "すべて";
+  optionAllElement.innerHTML = "すべて";
+  selectElement.appendChild(optionAllElement);
+
+  for (let i = 1; i < list.length; i++) {
+    let optionElement = document.createElement("option");
+    optionElement.value = list[i];
+    optionElement.innerHTML = list[i];
+
+    selectElement.appendChild(optionElement);
+  }
+
+  //親要素に登録
+  let centerclum = document.getElementsByClassName("centerclum-wrapper")[0].getElementsByClassName("container");
+  centerclum[0].insertBefore(selectElement.cloneNode(true), centerclum[0].firstChild);
+
+  centerclum[0].getElementsByClassName("drop-list")[0].addEventListener('change', function () {
+    //選択されたoption番号を取得
+    var index = this.selectedIndex;
+    SortArticle(centerclum[0].getElementsByClassName("works")[0], GerneList[index]);
+    SortArticle(document.getElementsByClassName("read-works")[0], GerneList[index]);
+  });
+}
+
+/*
+// ドロップボックスを操作した時のイベント
+// 記事をソートする
+// parentElement:親要素を特定（rightclum or centerclum or leftclumのどれか）
+// selectedOptionName:string型、記事のジャンル名を指定する
+*/
+function SortArticle(parentElement, selectedOptionName) {
+  console.log(selectedOptionName);
+  if (selectedOptionName == "すべて") {
+    let allElement = parentElement.children;
+    for (let i = 0; i < allElement.length; i++) {
+      allElement[i].classList.add("now-sort-selected");
+    }
+  } else {
+    let nowsortselectedElement = parentElement.getElementsByClassName("now-sort-selected");
+    let selectedElement = parentElement.getElementsByClassName(selectedOptionName);
+
+    //クラス名の初期化
+    let nowsortlen = nowsortselectedElement.length;
+    for (let i = 0; i < nowsortlen; i++) {
+      nowsortselectedElement[0].classList.remove('now-sort-selected');
+    }
+
+    //選択したジャンルの要素にクラス名を追加
+    for (let i = 0; i < selectedElement.length; i++) {
+      selectedElement[i].classList.add("now-sort-selected");
     }
   }
 }
-
-
 
 
 /*
